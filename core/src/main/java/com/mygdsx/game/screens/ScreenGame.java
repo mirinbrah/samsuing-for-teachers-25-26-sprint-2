@@ -15,6 +15,7 @@ import com.mygdsx.game.characters.Bird;
 import com.mygdsx.game.characters.Tube;
 import com.mygdsx.game.components.MovingBackground;
 import com.mygdsx.game.components.PointCounter;
+import com.mygdsx.game.config.GameConfig;
 
 public class ScreenGame implements Screen {
 
@@ -43,7 +44,12 @@ public class ScreenGame implements Screen {
             "backgrounds/game_bg_clouds.png",
             "backgrounds/game_bg_bushes.png"
         );
-        bird = new Bird(20, SCR_HEIGHT / 2, 160, 128);
+        bird = new Bird(
+            20,
+            SCR_HEIGHT / 2,
+            GameConfig.BIRD_WIDTH,
+            GameConfig.BIRD_HEIGHT
+        );
         pointCounter = new PointCounter(
             MyGdxGame.SCR_WIDTH - POINT_COUNTER_MARGIN_RIGHT,
             MyGdxGame.SCR_HEIGHT - POINT_COUNTER_MARGIN_TOP

@@ -3,12 +3,9 @@ package com.mygdsx.game.characters;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.mygdsx.game.MyGdxGame;
+import com.mygdsx.game.config.GameConfig;
 
 public class Bird {
-    private static final float MAX_HEIGHT_OF_JUMP = 200f;
-    private static final float GRAVITY = 900f;
-    private static final float HITBOX_SCALE = 0.8f;
-
     float x;
     float y;
 
@@ -32,12 +29,14 @@ public class Bird {
     }
 
     public void fly(float delta) {
-        verticalSpeed -= GRAVITY * delta;
+        verticalSpeed -= GameConfig.BIRD_GRAVITY * delta;
         y += verticalSpeed * delta;
     }
 
     public void onClick() {
-        verticalSpeed = (float) Math.sqrt(2f * GRAVITY * MAX_HEIGHT_OF_JUMP);
+        verticalSpeed = (float) Math.sqrt(
+            2f * GameConfig.BIRD_GRAVITY * GameConfig.BIRD_MAX_JUMP_HEIGHT
+        );
     }
 
     public void setY(float y) {
@@ -45,19 +44,19 @@ public class Bird {
     }
 
     float hitboxLeft() {
-        return x + width * (1f - HITBOX_SCALE) / 2f;
+        return x + width * (1f - GameConfig.BIRD_HITBOX_SCALE) / 2f;
     }
 
     float hitboxRight() {
-        return hitboxLeft() + width * HITBOX_SCALE;
+        return hitboxLeft() + width * GameConfig.BIRD_HITBOX_SCALE;
     }
 
     float hitboxBottom() {
-        return y + height * (1f - HITBOX_SCALE) / 2f;
+        return y + height * (1f - GameConfig.BIRD_HITBOX_SCALE) / 2f;
     }
 
     float hitboxTop() {
-        return hitboxBottom() + height * HITBOX_SCALE;
+        return hitboxBottom() + height * GameConfig.BIRD_HITBOX_SCALE;
     }
 
     public boolean isInField() {

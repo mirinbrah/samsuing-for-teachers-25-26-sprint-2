@@ -3,6 +3,7 @@ package com.mygdsx.game.characters;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.mygdsx.game.MyGdxGame;
+import com.mygdsx.game.config.GameConfig;
 
 import java.util.Random;
 
@@ -15,7 +16,6 @@ public class Tube {
     private final int height = 700;
     private final int gapHeight = 400;
     private final int padding = 50;
-    private final int speed = 5;
     private int gapY;
     private final int distanceBetweenTubes;
     private final Random random;
@@ -43,7 +43,7 @@ public class Tube {
     }
 
     public void move() {
-        x -= speed;
+        x -= GameConfig.TUBE_SPEED;
         if (x < -width) {
             x = MyGdxGame.SCR_WIDTH + distanceBetweenTubes;
             isPointReceived = false;
