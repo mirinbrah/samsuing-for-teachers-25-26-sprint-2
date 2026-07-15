@@ -27,7 +27,11 @@ public class ScreenGame implements Screen {
 
     public ScreenGame(MyGdxGame myGdxGame) {
         this.myGdxGame = myGdxGame;
-        background = new MovingBackground();
+        background = new MovingBackground(
+            "backgrounds/game_bg.png",
+            "backgrounds/game_bg_clouds.png",
+            "backgrounds/game_bg_bushes.png"
+        );
         bird = new Bird(20, SCR_HEIGHT / 2, 250, 200);
         pointCounter = new PointCounter(
             MyGdxGame.SCR_WIDTH - POINT_COUNTER_MARGIN_RIGHT,
@@ -47,10 +51,17 @@ public class ScreenGame implements Screen {
     public void show() {
         gamePoints = 0;
         isGameOver = false;
+        bird.setY(SCR_HEIGHT / 2);
+        initTubes();
     }
 
     @Override
     public void render(float delta) {
+        if (isGameOver) {
+            myGdxGame.screenRestart.gamePoints = gamePoints;
+            myGdxGame.setScreen(myGdxGame.screenRestart);
+        }
+
         if (Gdx.input.justTouched()) {
             bird.onClick();
         }
