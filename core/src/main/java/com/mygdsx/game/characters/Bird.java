@@ -1,7 +1,8 @@
-package com.mygdsx.game;
+package com.mygdsx.game.characters;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.mygdsx.game.MyGdxGame;
 
 public class Bird {
     private static final float MAX_HEIGHT_OF_JUMP = 200f;
@@ -45,7 +46,7 @@ public class Bird {
         return !(y > MyGdxGame.SCR_HEIGHT);
     }
 
-    void draw(Batch batch) {
+    public void draw(Batch batch) {
         int frameMultiplier = 10;
         batch.draw(framesArray[frameCounter / frameMultiplier], x, y, width, height);
         if (frameCounter++ == framesArray.length * frameMultiplier - 1) frameCounter = 0;

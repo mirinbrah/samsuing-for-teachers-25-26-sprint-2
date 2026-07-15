@@ -1,4 +1,4 @@
-package com.mygdsx.game;
+package com.mygdsx.game.components;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;

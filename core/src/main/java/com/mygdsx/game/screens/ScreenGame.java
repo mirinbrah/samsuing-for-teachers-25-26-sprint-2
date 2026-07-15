@@ -1,10 +1,16 @@
-package com.mygdsx.game;
+package com.mygdsx.game.screens;
 
 import static com.mygdsx.game.MyGdxGame.SCR_HEIGHT;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdsx.game.MyGdxGame;
+import com.mygdsx.game.characters.Bird;
+import com.mygdsx.game.characters.Tube;
+import com.mygdsx.game.components.MovingBackground;
+import com.mygdsx.game.components.PointCounter;
+
 public class ScreenGame implements Screen {
 
     private static final int POINT_COUNTER_MARGIN_TOP = 60;

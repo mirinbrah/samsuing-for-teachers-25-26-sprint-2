@@ -1,7 +1,8 @@
-package com.mygdsx.game;
+package com.mygdsx.game.components;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.mygdsx.game.MyGdxGame;
 
 public class MovingBackground {
 
@@ -17,7 +18,7 @@ public class MovingBackground {
     private final int cloudsSpeed = 1;
     private final int bushesSpeed = 3;
 
-    MovingBackground() {
+    public MovingBackground() {
         clouds1X = 0;
         clouds2X = MyGdxGame.SCR_WIDTH;
         bushes1X = 0;
@@ -28,7 +29,7 @@ public class MovingBackground {
         bushesTexture = new Texture("game_bg_bushes.png");
     }
 
-    void move() {
+    public void move() {
         clouds1X -= cloudsSpeed;
         clouds2X -= cloudsSpeed;
         bushes1X -= bushesSpeed;
@@ -48,7 +49,7 @@ public class MovingBackground {
         }
     }
 
-    void draw(Batch batch) {
+    public void draw(Batch batch) {
         batch.draw(baseTexture, 0, 0, MyGdxGame.SCR_WIDTH, MyGdxGame.SCR_HEIGHT);
 
         batch.draw(cloudsTexture, clouds1X, 0,
@@ -62,7 +63,7 @@ public class MovingBackground {
             MyGdxGame.SCR_WIDTH + 2, MyGdxGame.SCR_HEIGHT);
     }
 
-    void dispose() {
+    public void dispose() {
         baseTexture.dispose();
         cloudsTexture.dispose();
         bushesTexture.dispose();

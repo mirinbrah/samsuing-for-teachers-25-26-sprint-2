@@ -1,7 +1,8 @@
-package com.mygdsx.game;
+package com.mygdsx.game.characters;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.mygdsx.game.MyGdxGame;
 
 import java.util.Random;
 
