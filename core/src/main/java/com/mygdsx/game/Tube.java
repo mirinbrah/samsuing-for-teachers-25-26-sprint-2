@@ -19,6 +19,7 @@ public class Tube {
     private final int distanceBetweenTubes;
     private final Random random;
     private float x;
+    private boolean isPointReceived;
 
     public Tube(int tubeCount, int tubeIdx) {
         random = new Random();
@@ -26,6 +27,7 @@ public class Tube {
             + random.nextInt(MyGdxGame.SCR_HEIGHT - 2 * (padding + gapHeight / 2));
         distanceBetweenTubes = (MyGdxGame.SCR_WIDTH + width) / (tubeCount - 1);
         x = distanceBetweenTubes * tubeIdx + MyGdxGame.SCR_WIDTH;
+        isPointReceived = false;
 
         textureUpperTube = new Texture("tubes/tube_flipped.png");
         textureDownTube = new Texture("tubes/tube.png");
@@ -43,9 +45,22 @@ public class Tube {
         x -= speed;
         if (x < -width) {
             x = MyGdxGame.SCR_WIDTH + distanceBetweenTubes;
+            isPointReceived = false;
             gapY = gapHeight / 2 + padding
                 + random.nextInt(MyGdxGame.SCR_HEIGHT - 2 * (padding + gapHeight / 2));
         }
+    }
+
+    public boolean isPassed(Bird bird) {
+        return bird.x > x + width && !isPointReceived;
+    }
+
+    public boolean needAddPoint(Bird bird) {
+        return isPassed(bird);
+    }
+
+    public void setPointReceived() {
+        isPointReceived = true;
     }
 
     public boolean isHit(Bird bird) {

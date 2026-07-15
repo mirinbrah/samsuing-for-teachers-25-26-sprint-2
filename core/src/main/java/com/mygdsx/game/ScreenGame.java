@@ -7,15 +7,24 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.ScreenUtils;
 public class ScreenGame implements Screen {
 
+    private static final int POINT_COUNTER_MARGIN_TOP = 60;
+    private static final int POINT_COUNTER_MARGIN_RIGHT = 400;
+
     private final MyGdxGame myGdxGame;
     private final Bird bird;
+    private final PointCounter pointCounter;
     private final int tubeCount = 3;
     private Tube[] tubes;
+    private int gamePoints;
     private boolean isGameOver;
 
     public ScreenGame(MyGdxGame myGdxGame) {
         this.myGdxGame = myGdxGame;
         bird = new Bird(20, SCR_HEIGHT / 2, 250, 200);
+        pointCounter = new PointCounter(
+            MyGdxGame.SCR_WIDTH - POINT_COUNTER_MARGIN_RIGHT,
+            MyGdxGame.SCR_HEIGHT - POINT_COUNTER_MARGIN_TOP
+        );
         initTubes();
     }
 
@@ -28,6 +37,7 @@ public class ScreenGame implements Screen {
 
     @Override
     public void show() {
+        gamePoints = 0;
         isGameOver = false;
     }
 
@@ -46,6 +56,10 @@ public class ScreenGame implements Screen {
             if (tube.isHit(bird)) {
                 System.out.println("hit");
                 isGameOver = true;
+            } else if (tube.needAddPoint(bird)) {
+                gamePoints += 1;
+                tube.setPointReceived();
+                System.out.println(gamePoints);
             }
         }
 
@@ -57,6 +71,7 @@ public class ScreenGame implements Screen {
             tube.draw(myGdxGame.batch);
         }
         bird.draw(myGdxGame.batch);
+        pointCounter.draw(myGdxGame.batch, gamePoints);
         myGdxGame.batch.end();
     }
 
@@ -79,6 +94,7 @@ public class ScreenGame implements Screen {
     @Override
     public void dispose() {
         bird.dispose();
+        pointCounter.dispose();
         for (Tube tube : tubes) {
             tube.dispose();
         }

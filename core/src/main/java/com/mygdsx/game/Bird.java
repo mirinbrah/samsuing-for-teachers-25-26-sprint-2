@@ -1,6 +1,5 @@
 package com.mygdsx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
@@ -30,10 +29,6 @@ public class Bird {
         this.height = height;
     }
 
-    public void fly() {
-        fly(Gdx.graphics.getDeltaTime());
-    }
-
     public void fly(float delta) {
         verticalSpeed -= GRAVITY * delta;
         y += verticalSpeed * delta;
@@ -47,10 +42,7 @@ public class Bird {
         if (y + height < 0) {
             return false;
         }
-        if (y > MyGdxGame.SCR_HEIGHT) {
-            return false;
-        }
-        return true;
+        return !(y > MyGdxGame.SCR_HEIGHT);
     }
 
     void draw(Batch batch) {
