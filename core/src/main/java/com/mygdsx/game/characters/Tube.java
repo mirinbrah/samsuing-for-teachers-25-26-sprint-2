@@ -65,11 +65,11 @@ public class Tube {
     }
 
     public boolean isHit(Bird bird) {
-        boolean intersectsByX = bird.x + bird.width >= x
-            && bird.x <= x + width;
+        boolean intersectsByX = bird.hitboxRight() >= x
+            && bird.hitboxLeft() <= x + width;
 
-        boolean hitsDownTube = bird.y <= gapY - gapHeight / 2f;
-        boolean hitsUpperTube = bird.y + bird.height
+        boolean hitsDownTube = bird.hitboxBottom() <= gapY - gapHeight / 2f;
+        boolean hitsUpperTube = bird.hitboxTop()
             >= gapY + gapHeight / 2f;
 
         return intersectsByX && (hitsDownTube || hitsUpperTube);

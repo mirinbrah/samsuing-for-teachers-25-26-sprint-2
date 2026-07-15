@@ -32,7 +32,7 @@ public class ScreenGame implements Screen {
             "backgrounds/game_bg_clouds.png",
             "backgrounds/game_bg_bushes.png"
         );
-        bird = new Bird(20, SCR_HEIGHT / 2, 250, 200);
+        bird = new Bird(20, SCR_HEIGHT / 2, 160, 128);
         pointCounter = new PointCounter(
             MyGdxGame.SCR_WIDTH - POINT_COUNTER_MARGIN_RIGHT,
             MyGdxGame.SCR_HEIGHT - POINT_COUNTER_MARGIN_TOP

@@ -7,6 +7,7 @@ import com.mygdsx.game.MyGdxGame;
 public class Bird {
     private static final float MAX_HEIGHT_OF_JUMP = 200f;
     private static final float GRAVITY = 900f;
+    private static final float HITBOX_SCALE = 0.8f;
 
     float x;
     float y;
@@ -41,6 +42,22 @@ public class Bird {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    float hitboxLeft() {
+        return x + width * (1f - HITBOX_SCALE) / 2f;
+    }
+
+    float hitboxRight() {
+        return hitboxLeft() + width * HITBOX_SCALE;
+    }
+
+    float hitboxBottom() {
+        return y + height * (1f - HITBOX_SCALE) / 2f;
+    }
+
+    float hitboxTop() {
+        return hitboxBottom() + height * HITBOX_SCALE;
     }
 
     public boolean isInField() {
