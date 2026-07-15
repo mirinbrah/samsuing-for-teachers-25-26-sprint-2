@@ -5,8 +5,6 @@ import static com.mygdsx.game.MyGdxGame.SCR_HEIGHT;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.ScreenUtils;
-
-/** Экран основного игрового процесса. */
 public class ScreenGame implements Screen {
 
     private final MyGdxGame myGdxGame;
