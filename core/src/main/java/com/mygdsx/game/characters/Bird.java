@@ -6,11 +6,11 @@ import com.mygdsx.game.MyGdxGame;
 import com.mygdsx.game.config.GameConfig;
 
 public class Bird {
-    float x;
-    float y;
+    private float x;
+    private float y;
 
-    final float width;
-    final float height;
+    private final float width;
+    private final float height;
     private float verticalSpeed;
     private final Texture[] framesArray = new Texture[]{
         new Texture("birdTiles/bird0.png"),
@@ -43,6 +43,10 @@ public class Bird {
         this.y = y;
     }
 
+    float left() {
+        return x;
+    }
+
     float hitboxLeft() {
         return x + width * (1f - GameConfig.BIRD_HITBOX_SCALE) / 2f;
     }
@@ -67,9 +71,15 @@ public class Bird {
     }
 
     public void draw(Batch batch) {
+        draw(batch, true);
+    }
+
+    public void draw(Batch batch, boolean animate) {
         int frameMultiplier = 10;
         batch.draw(framesArray[frameCounter / frameMultiplier], x, y, width, height);
-        if (frameCounter++ == framesArray.length * frameMultiplier - 1) frameCounter = 0;
+        if (animate && frameCounter++ == framesArray.length * frameMultiplier - 1) {
+            frameCounter = 0;
+        }
     }
 
     public void dispose() {

@@ -8,32 +8,40 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 public class TextButton {
 
-    BitmapFont font;
-
-    String text;
-    Texture texture;
-
-    int x, y;
-    int textX, textY;
-    int buttonWidth, buttonHeight;
-    int textWidth, textHeight;
+    private final BitmapFont font;
+    private final String text;
+    private final Texture texture;
+    private final int x;
+    private final int y;
+    private final int textX;
+    private final int textY;
+    private final int buttonWidth;
+    private final int buttonHeight;
 
     public TextButton(int x, int y, String text) {
+        this(x, y, text, 1f);
+    }
+
+    public TextButton(int x, int y, String text, float buttonScale) {
         this.text = text;
         this.x = x;
         this.y = y;
 
         font = new BitmapFont();
-        font.getData().scale(5f);
+        font.getRegion().getTexture().setFilter(
+            Texture.TextureFilter.Linear,
+            Texture.TextureFilter.Linear
+        );
+        font.getData().setScale(5f * buttonScale);
         font.setColor(Color.WHITE);
 
         GlyphLayout gl = new GlyphLayout(font, text);
-        textWidth = (int) gl.width;
-        textHeight = (int) gl.height;
+        int textWidth = (int) gl.width;
+        int textHeight = (int) gl.height;
 
         texture = new Texture("ui/button_bg.png");
-        buttonWidth = texture.getWidth();
-        buttonHeight = texture.getHeight();
+        buttonWidth = (int) (texture.getWidth() * buttonScale);
+        buttonHeight = (int) (texture.getHeight() * buttonScale);
 
         textX = x + (buttonWidth - textWidth) / 2;
         textY = y + (buttonHeight + textHeight) / 2;

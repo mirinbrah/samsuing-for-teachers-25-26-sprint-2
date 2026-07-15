@@ -12,10 +12,9 @@ public class Tube {
     private final Texture textureUpperTube;
     private final Texture textureDownTube;
 
-    private final int width = 200;
-    private final int height = 700;
-    private final int gapHeight = 400;
-    private final int padding = 50;
+    private static final int WIDTH = 200;
+    private static final int HEIGHT = 700;
+    private static final int PADDING = 50;
     private int gapY;
     private final int distanceBetweenTubes;
     private final Random random;
@@ -24,9 +23,12 @@ public class Tube {
 
     public Tube(int tubeCount, int tubeIdx) {
         random = new Random();
-        gapY = gapHeight / 2 + padding
-            + random.nextInt(MyGdxGame.SCR_HEIGHT - 2 * (padding + gapHeight / 2));
-        distanceBetweenTubes = (MyGdxGame.SCR_WIDTH + width) / (tubeCount - 1);
+        gapY = GameConfig.TUBE_GAP_HEIGHT / 2 + PADDING
+            + random.nextInt(
+                MyGdxGame.SCR_HEIGHT
+                    - 2 * (PADDING + GameConfig.TUBE_GAP_HEIGHT / 2)
+            );
+        distanceBetweenTubes = (MyGdxGame.SCR_WIDTH + WIDTH) / (tubeCount - 1);
         x = distanceBetweenTubes * tubeIdx + MyGdxGame.SCR_WIDTH;
         isPointReceived = false;
 
@@ -35,25 +37,28 @@ public class Tube {
     }
 
     public void draw(Batch batch) {
-        float downTubeY = gapY - gapHeight / 2f - height;
-        float upperTubeY = gapY + gapHeight / 2f;
+        float downTubeY = gapY - GameConfig.TUBE_GAP_HEIGHT / 2f - HEIGHT;
+        float upperTubeY = gapY + GameConfig.TUBE_GAP_HEIGHT / 2f;
 
-        batch.draw(textureDownTube, x, downTubeY, width, height);
-        batch.draw(textureUpperTube, x, upperTubeY, width, height);
+        batch.draw(textureDownTube, x, downTubeY, WIDTH, HEIGHT);
+        batch.draw(textureUpperTube, x, upperTubeY, WIDTH, HEIGHT);
     }
 
     public void move() {
         x -= GameConfig.TUBE_SPEED;
-        if (x < -width) {
+        if (x < -WIDTH) {
             x = MyGdxGame.SCR_WIDTH + distanceBetweenTubes;
             isPointReceived = false;
-            gapY = gapHeight / 2 + padding
-                + random.nextInt(MyGdxGame.SCR_HEIGHT - 2 * (padding + gapHeight / 2));
+            gapY = GameConfig.TUBE_GAP_HEIGHT / 2 + PADDING
+                + random.nextInt(
+                    MyGdxGame.SCR_HEIGHT
+                        - 2 * (PADDING + GameConfig.TUBE_GAP_HEIGHT / 2)
+                );
         }
     }
 
-    public boolean isPassed(Bird bird) {
-        return bird.x > x + width && !isPointReceived;
+    private boolean isPassed(Bird bird) {
+        return bird.left() > x + WIDTH && !isPointReceived;
     }
 
     public boolean needAddPoint(Bird bird) {
@@ -66,11 +71,12 @@ public class Tube {
 
     public boolean isHit(Bird bird) {
         boolean intersectsByX = bird.hitboxRight() >= x
-            && bird.hitboxLeft() <= x + width;
+            && bird.hitboxLeft() <= x + WIDTH;
 
-        boolean hitsDownTube = bird.hitboxBottom() <= gapY - gapHeight / 2f;
+        boolean hitsDownTube = bird.hitboxBottom()
+            <= gapY - GameConfig.TUBE_GAP_HEIGHT / 2f;
         boolean hitsUpperTube = bird.hitboxTop()
-            >= gapY + gapHeight / 2f;
+            >= gapY + GameConfig.TUBE_GAP_HEIGHT / 2f;
 
         return intersectsByX && (hitsDownTube || hitsUpperTube);
     }

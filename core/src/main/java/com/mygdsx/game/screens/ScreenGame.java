@@ -3,39 +3,48 @@ package com.mygdsx.game.screens;
 import static com.mygdsx.game.MyGdxGame.SCR_HEIGHT;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdsx.game.MyGdxGame;
 import com.mygdsx.game.characters.Bird;
 import com.mygdsx.game.characters.Tube;
 import com.mygdsx.game.components.MovingBackground;
 import com.mygdsx.game.components.PointCounter;
+import com.mygdsx.game.components.TextButton;
 import com.mygdsx.game.config.GameConfig;
 
 public class ScreenGame implements Screen {
 
     private static final int POINT_COUNTER_MARGIN_TOP = 60;
     private static final int POINT_COUNTER_MARGIN_RIGHT = 400;
+    private static final int PAUSE_BUTTON_X = 20;
+    private static final int PAUSE_BUTTON_Y = 20;
     private static final String STARTER_TEXT = "Tap to Fly";
+    private static final String PAUSE_TEXT = "Paused";
 
     private final MyGdxGame myGdxGame;
     private final MovingBackground background;
     private final Bird bird;
     private final PointCounter pointCounter;
+    private final TextButton buttonPause;
     private Texture starterOverlay;
     private BitmapFont starterFont;
     private float starterTextX;
     private float starterTextY;
-    private final int tubeCount = 3;
+    private float pauseTextX;
+    private float pauseTextY;
     private Tube[] tubes;
     private int gamePoints;
     private boolean isGameOver;
     private boolean isWaitingToStart;
+    private boolean isPaused;
 
     public ScreenGame(MyGdxGame myGdxGame) {
         this.myGdxGame = myGdxGame;
@@ -54,6 +63,7 @@ public class ScreenGame implements Screen {
             MyGdxGame.SCR_WIDTH - POINT_COUNTER_MARGIN_RIGHT,
             MyGdxGame.SCR_HEIGHT - POINT_COUNTER_MARGIN_TOP
         );
+        buttonPause = new TextButton(PAUSE_BUTTON_X, PAUSE_BUTTON_Y, "Pause", 0.5f);
 
         initStarter();
         initTubes();
@@ -67,14 +77,22 @@ public class ScreenGame implements Screen {
         overlayPixmap.dispose();
 
         starterFont = new BitmapFont();
+        starterFont.getRegion().getTexture().setFilter(
+            Texture.TextureFilter.Linear,
+            Texture.TextureFilter.Linear
+        );
         starterFont.getData().setScale(5f);
         starterFont.setColor(Color.WHITE);
         GlyphLayout starterLayout = new GlyphLayout(starterFont, STARTER_TEXT);
         starterTextX = (MyGdxGame.SCR_WIDTH - starterLayout.width) / 2f;
         starterTextY = (MyGdxGame.SCR_HEIGHT + starterLayout.height) / 2f;
+        GlyphLayout pauseLayout = new GlyphLayout(starterFont, PAUSE_TEXT);
+        pauseTextX = (MyGdxGame.SCR_WIDTH - pauseLayout.width) / 2f;
+        pauseTextY = (MyGdxGame.SCR_HEIGHT + pauseLayout.height) / 2f;
     }
 
     private void initTubes() {
+        int tubeCount = 3;
         tubes = new Tube[tubeCount];
         for (int i = 0; i < tubeCount; i++) {
             tubes[i] = new Tube(tubeCount, i);
@@ -87,27 +105,49 @@ public class ScreenGame implements Screen {
         gamePoints = 0;
         isGameOver = false;
         isWaitingToStart = true;
-        bird.setY(SCR_HEIGHT / 2);
+        isPaused = false;
+        bird.setY((float) SCR_HEIGHT / 2);
         initTubes();
     }
 
     @Override
     public void render(float delta) {
         if (isGameOver) {
-            myGdxGame.screenRestart.gamePoints = gamePoints;
+            myGdxGame.screenRestart.setGamePoints(gamePoints);
             myGdxGame.setScreen(myGdxGame.screenRestart);
         }
 
-        boolean justTouched = Gdx.input.justTouched();
+        boolean pointerPressed = Gdx.input.justTouched();
+        boolean pauseButtonPressed = false;
+        if (pointerPressed && !isWaitingToStart) {
+            Vector2 touch = myGdxGame.viewport.unproject(
+                new Vector2(Gdx.input.getX(), Gdx.input.getY())
+            );
+            pauseButtonPressed = buttonPause.isHit((int) touch.x, (int) touch.y);
+        }
+
+        boolean pausePressed = Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)
+            || pauseButtonPressed;
+        if (!isWaitingToStart && pausePressed) {
+            isPaused = !isPaused;
+        }
+
+        if (isPaused) {
+            renderGame(true);
+            return;
+        }
+
+        boolean flyPressed = (pointerPressed && !pauseButtonPressed)
+            || Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
         if (isWaitingToStart) {
-            if (justTouched) {
+            if (flyPressed) {
                 isWaitingToStart = false;
                 bird.onClick();
             } else {
                 renderStarter();
                 return;
             }
-        } else if (justTouched) {
+        } else if (flyPressed) {
             bird.onClick();
         }
         background.move();
@@ -128,6 +168,10 @@ public class ScreenGame implements Screen {
             }
         }
 
+        renderGame(false);
+    }
+
+    private void renderGame(boolean paused) {
         ScreenUtils.clear(1, 0, 0, 1);
         myGdxGame.camera.update();
         myGdxGame.batch.setProjectionMatrix(myGdxGame.camera.combined);
@@ -136,8 +180,21 @@ public class ScreenGame implements Screen {
         for (Tube tube : tubes) {
             tube.draw(myGdxGame.batch);
         }
-        bird.draw(myGdxGame.batch);
+        bird.draw(myGdxGame.batch, !paused);
         pointCounter.draw(myGdxGame.batch, gamePoints);
+        if (paused) {
+            myGdxGame.batch.setColor(1f, 1f, 1f, 0.65f);
+            myGdxGame.batch.draw(
+                starterOverlay,
+                0,
+                0,
+                MyGdxGame.SCR_WIDTH,
+                MyGdxGame.SCR_HEIGHT
+            );
+            myGdxGame.batch.setColor(Color.WHITE);
+            starterFont.draw(myGdxGame.batch, PAUSE_TEXT, pauseTextX, pauseTextY);
+        }
+        buttonPause.draw(myGdxGame.batch);
         myGdxGame.batch.end();
     }
 
@@ -181,6 +238,7 @@ public class ScreenGame implements Screen {
         background.dispose();
         bird.dispose();
         pointCounter.dispose();
+        buttonPause.dispose();
         starterOverlay.dispose();
         starterFont.dispose();
         for (Tube tube : tubes) {

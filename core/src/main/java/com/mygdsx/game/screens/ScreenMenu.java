@@ -2,7 +2,7 @@ package com.mygdsx.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdsx.game.MyGdxGame;
 import com.mygdsx.game.components.MovingBackground;
@@ -29,8 +29,8 @@ public class ScreenMenu implements Screen {
     @Override
     public void render(float delta) {
         if (Gdx.input.justTouched()) {
-            Vector3 touch = myGdxGame.camera.unproject(
-                new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)
+            Vector2 touch = myGdxGame.viewport.unproject(
+                new Vector2(Gdx.input.getX(), Gdx.input.getY())
             );
             int touchX = (int) touch.x;
             int touchY = (int) touch.y;

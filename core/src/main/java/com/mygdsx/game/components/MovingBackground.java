@@ -6,6 +6,9 @@ import com.mygdsx.game.MyGdxGame;
 
 public class MovingBackground {
 
+    private static final int CLOUDS_SPEED = 1;
+    private static final int BUSHES_SPEED = 3;
+
     private final Texture baseTexture;
     private final Texture cloudsTexture;
     private final Texture bushesTexture;
@@ -14,9 +17,6 @@ public class MovingBackground {
     private int clouds2X;
     private int bushes1X;
     private int bushes2X;
-
-    private final int cloudsSpeed = 1;
-    private final int bushesSpeed = 3;
 
     public MovingBackground(String pathToTexture) {
         this(pathToTexture, null, null);
@@ -38,10 +38,10 @@ public class MovingBackground {
             return;
         }
 
-        clouds1X -= cloudsSpeed;
-        clouds2X -= cloudsSpeed;
-        bushes1X -= bushesSpeed;
-        bushes2X -= bushesSpeed;
+        clouds1X -= CLOUDS_SPEED;
+        clouds2X -= CLOUDS_SPEED;
+        bushes1X -= BUSHES_SPEED;
+        bushes2X -= BUSHES_SPEED;
 
         if (clouds1X <= -MyGdxGame.SCR_WIDTH) {
             clouds1X = MyGdxGame.SCR_WIDTH;
