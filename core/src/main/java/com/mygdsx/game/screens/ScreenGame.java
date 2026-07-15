@@ -4,6 +4,11 @@ import static com.mygdsx.game.MyGdxGame.SCR_HEIGHT;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdsx.game.MyGdxGame;
 import com.mygdsx.game.characters.Bird;
@@ -15,15 +20,21 @@ public class ScreenGame implements Screen {
 
     private static final int POINT_COUNTER_MARGIN_TOP = 60;
     private static final int POINT_COUNTER_MARGIN_RIGHT = 400;
+    private static final String STARTER_TEXT = "Tap to Fly";
 
     private final MyGdxGame myGdxGame;
     private final MovingBackground background;
     private final Bird bird;
     private final PointCounter pointCounter;
+    private Texture starterOverlay;
+    private BitmapFont starterFont;
+    private float starterTextX;
+    private float starterTextY;
     private final int tubeCount = 3;
     private Tube[] tubes;
     private int gamePoints;
     private boolean isGameOver;
+    private boolean isWaitingToStart;
 
     public ScreenGame(MyGdxGame myGdxGame) {
         this.myGdxGame = myGdxGame;
@@ -37,7 +48,24 @@ public class ScreenGame implements Screen {
             MyGdxGame.SCR_WIDTH - POINT_COUNTER_MARGIN_RIGHT,
             MyGdxGame.SCR_HEIGHT - POINT_COUNTER_MARGIN_TOP
         );
+
+        initStarter();
         initTubes();
+    }
+
+    private void initStarter() {
+        Pixmap overlayPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        overlayPixmap.setColor(Color.BLACK);
+        overlayPixmap.fill();
+        starterOverlay = new Texture(overlayPixmap);
+        overlayPixmap.dispose();
+
+        starterFont = new BitmapFont();
+        starterFont.getData().setScale(5f);
+        starterFont.setColor(Color.WHITE);
+        GlyphLayout starterLayout = new GlyphLayout(starterFont, STARTER_TEXT);
+        starterTextX = (MyGdxGame.SCR_WIDTH - starterLayout.width) / 2f;
+        starterTextY = (MyGdxGame.SCR_HEIGHT + starterLayout.height) / 2f;
     }
 
     private void initTubes() {
@@ -49,8 +77,10 @@ public class ScreenGame implements Screen {
 
     @Override
     public void show() {
+        Gdx.input.setOnscreenKeyboardVisible(false);
         gamePoints = 0;
         isGameOver = false;
+        isWaitingToStart = true;
         bird.setY(SCR_HEIGHT / 2);
         initTubes();
     }
@@ -62,7 +92,16 @@ public class ScreenGame implements Screen {
             myGdxGame.setScreen(myGdxGame.screenRestart);
         }
 
-        if (Gdx.input.justTouched()) {
+        boolean justTouched = Gdx.input.justTouched();
+        if (isWaitingToStart) {
+            if (justTouched) {
+                isWaitingToStart = false;
+                bird.onClick();
+            } else {
+                renderStarter();
+                return;
+            }
+        } else if (justTouched) {
             bird.onClick();
         }
         background.move();
@@ -96,6 +135,25 @@ public class ScreenGame implements Screen {
         myGdxGame.batch.end();
     }
 
+    private void renderStarter() {
+        ScreenUtils.clear(1, 0, 0, 1);
+        myGdxGame.camera.update();
+        myGdxGame.batch.setProjectionMatrix(myGdxGame.camera.combined);
+        myGdxGame.batch.begin();
+        background.draw(myGdxGame.batch);
+        myGdxGame.batch.setColor(1f, 1f, 1f, 0.65f);
+        myGdxGame.batch.draw(
+            starterOverlay,
+            0,
+            0,
+            MyGdxGame.SCR_WIDTH,
+            MyGdxGame.SCR_HEIGHT
+        );
+        myGdxGame.batch.setColor(Color.WHITE);
+        starterFont.draw(myGdxGame.batch, STARTER_TEXT, starterTextX, starterTextY);
+        myGdxGame.batch.end();
+    }
+
     @Override
     public void resize(int width, int height) {
     }
@@ -117,6 +175,8 @@ public class ScreenGame implements Screen {
         background.dispose();
         bird.dispose();
         pointCounter.dispose();
+        starterOverlay.dispose();
+        starterFont.dispose();
         for (Tube tube : tubes) {
             tube.dispose();
         }
