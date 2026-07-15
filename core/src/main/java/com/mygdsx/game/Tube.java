@@ -48,6 +48,17 @@ public class Tube {
         }
     }
 
+    public boolean isHit(Bird bird) {
+        boolean intersectsByX = bird.x + bird.width >= x
+            && bird.x <= x + width;
+
+        boolean hitsDownTube = bird.y <= gapY - gapHeight / 2f;
+        boolean hitsUpperTube = bird.y + bird.height
+            >= gapY + gapHeight / 2f;
+
+        return intersectsByX && (hitsDownTube || hitsUpperTube);
+    }
+
     public void dispose() {
         textureUpperTube.dispose();
         textureDownTube.dispose();

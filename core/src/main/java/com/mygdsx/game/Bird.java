@@ -8,11 +8,11 @@ public class Bird {
     private static final float MAX_HEIGHT_OF_JUMP = 200f;
     private static final float GRAVITY = 900f;
 
-    private float x;
-    private float y;
+    float x;
+    float y;
 
-    private final float width;
-    private final float height;
+    final float width;
+    final float height;
     private float verticalSpeed;
     private final Texture[] framesArray = new Texture[]{
         new Texture("birdTiles/bird0.png"),
@@ -41,6 +41,16 @@ public class Bird {
 
     public void onClick() {
         verticalSpeed = (float) Math.sqrt(2f * GRAVITY * MAX_HEIGHT_OF_JUMP);
+    }
+
+    public boolean isInField() {
+        if (y + height < 0) {
+            return false;
+        }
+        if (y > MyGdxGame.SCR_HEIGHT) {
+            return false;
+        }
+        return true;
     }
 
     void draw(Batch batch) {
