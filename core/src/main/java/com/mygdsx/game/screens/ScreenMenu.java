@@ -6,25 +6,20 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdsx.game.MyGdxGame;
 import com.mygdsx.game.components.MovingBackground;
-import com.mygdsx.game.components.PointCounter;
 import com.mygdsx.game.components.TextButton;
 
-public class ScreenRestart implements Screen {
-
-    PointCounter pointCounter;
-    int gamePoints;
+public class ScreenMenu implements Screen {
 
     private final MyGdxGame myGdxGame;
     private final MovingBackground background;
-    private final TextButton buttonRestart;
-    private final TextButton buttonMenu;
+    private final TextButton buttonStart;
+    private final TextButton buttonExit;
 
-    public ScreenRestart(MyGdxGame myGdxGame) {
+    public ScreenMenu(MyGdxGame myGdxGame) {
         this.myGdxGame = myGdxGame;
-        pointCounter = new PointCounter(750, 530);
-        buttonRestart = new TextButton(100, 400, "Restart");
-        buttonMenu = new TextButton(100, 200, "Menu");
         background = new MovingBackground("backgrounds/restart_bg.png");
+        buttonStart = new TextButton(100, 400, "Start");
+        buttonExit = new TextButton(100, 200, "Exit");
     }
 
     @Override
@@ -40,10 +35,10 @@ public class ScreenRestart implements Screen {
             int touchX = (int) touch.x;
             int touchY = (int) touch.y;
 
-            if (buttonRestart.isHit(touchX, touchY)) {
+            if (buttonStart.isHit(touchX, touchY)) {
                 myGdxGame.setScreen(myGdxGame.screenGame);
-            } else if (buttonMenu.isHit(touchX, touchY)) {
-                myGdxGame.setScreen(myGdxGame.screenMenu);
+            } else if (buttonExit.isHit(touchX, touchY)) {
+                Gdx.app.exit();
             }
         }
 
@@ -52,9 +47,8 @@ public class ScreenRestart implements Screen {
         myGdxGame.batch.setProjectionMatrix(myGdxGame.camera.combined);
         myGdxGame.batch.begin();
         background.draw(myGdxGame.batch);
-        buttonRestart.draw(myGdxGame.batch);
-        buttonMenu.draw(myGdxGame.batch);
-        pointCounter.draw(myGdxGame.batch, gamePoints);
+        buttonStart.draw(myGdxGame.batch);
+        buttonExit.draw(myGdxGame.batch);
         myGdxGame.batch.end();
     }
 
@@ -77,8 +71,7 @@ public class ScreenRestart implements Screen {
     @Override
     public void dispose() {
         background.dispose();
-        buttonRestart.dispose();
-        buttonMenu.dispose();
-        pointCounter.dispose();
+        buttonStart.dispose();
+        buttonExit.dispose();
     }
 }
