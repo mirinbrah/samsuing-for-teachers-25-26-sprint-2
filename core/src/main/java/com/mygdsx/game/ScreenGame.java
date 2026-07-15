@@ -1,5 +1,7 @@
 package com.mygdsx.game;
 
+import static com.mygdsx.game.MyGdxGame.SCR_HEIGHT;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -14,7 +16,7 @@ public class ScreenGame implements Screen {
 
     public ScreenGame(MyGdxGame myGdxGame) {
         this.myGdxGame = myGdxGame;
-        bird = new Bird(100, MyGdxGame.SCR_HEIGHT / 2);
+        bird = new Bird(20, SCR_HEIGHT / 2, 250, 200);
         initTubes();
     }
 

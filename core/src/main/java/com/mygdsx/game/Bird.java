@@ -22,12 +22,12 @@ public class Bird {
     };
     private int frameCounter;
 
-    public Bird(int x, int y) {
+    public Bird(int x, int y, float width, float height) {
         this.x = x;
         this.y = y;
         frameCounter = 0;
-        width = framesArray[0].getWidth();
-        height = framesArray[0].getHeight();
+        this.width = width;
+        this.height = height;
     }
 
     public void fly() {
